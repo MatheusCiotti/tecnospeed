@@ -9,21 +9,26 @@ app.use(cors());
 const db = new sqlite3.Database('./honesto.sqlite3');
 
 // Endpoint para obter todos os logs
-app.get('/api/logs', (req, res) => {
-    db.all('SELECT * FROM log', [], (err, rows) => {
+// Exemplo de configuração para Express
+app.get('/logs', (req, res) => {
+    const { rota, limit } = req.query;
+    const query = `SELECT status, created_at FROM log WHERE rota = ? ORDER BY created_at DESC LIMIT ?`;
+    db.all(query, [rota, limit], (err, rows) => {
         if (err) {
-            res.status(500).send(err.message);
+            res.status(500).json({ error: err.message });
             return;
         }
         res.json(rows);
     });
 });
 
-// Endpoint para obter logs por rota
+
+
+// Endpoint para obter os últimos 10 logs por rota
 app.get('/api/logs/rota/:rota', (req, res) => {
     const rota = req.params.rota;
-    console.log(`Fetching logs for rota: ${rota}`);
-    db.all('SELECT * FROM log WHERE rota LIKE ?', [`%${rota}%`], (err, rows) => {
+    console.log(`Fetching last 10 logs for rota: ${rota}`);
+    db.all('SELECT * FROM log WHERE rota LIKE ? ORDER BY id DESC LIMIT 10', [`%${rota}%`], (err, rows) => {
         if (err) {
             console.error('Database error:', err.message);
             res.status(500).send(err.message);
@@ -33,7 +38,6 @@ app.get('/api/logs/rota/:rota', (req, res) => {
         res.json(rows);
     });
 });
-
 
 app.listen(port, () => {
     console.log(`API server running on http://localhost:${port}`);

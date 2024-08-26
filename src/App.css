@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+
+.rota-list {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.rota-list .MuiListItem-root {
+  border-bottom: 1px solid #ddd;
+}
+
+.rota-list .MuiListItem-root:hover {
+  background-color: #f5f5f5;
+}

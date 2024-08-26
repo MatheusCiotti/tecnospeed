@@ -1,0 +1,9 @@
+.log-table {
+    margin-top: 20px;
+    padding: 1rem;
+    color: aqua;
+}
+
+.log-table .MuiTableCell-root {
+    border-bottom: 1px solid #ac4c4c;
+}
