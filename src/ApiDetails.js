@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Container, Typography, List, ListItem, ListItemText } from '@mui/material';
+import { Container, Typography, List, ListItem, ListItemText, CircularProgress } from '@mui/material';
 import axios from 'axios';
 
 function ApiDetails() {
@@ -11,17 +11,19 @@ function ApiDetails() {
 
     useEffect(() => {
         const fetchLogs = async () => {
+            setLoading(true);  // Inicia o carregamento
             try {
-                setLoading(true);
-                const response = await axios.get(`/logs?rota=${encodeURIComponent(apiUrl)}&limit=10`);
+                const response = await axios.get(`http://localhost:3001/api/logs/rota/${encodeURIComponent(apiUrl)}`);
                 setLogs(response.data);
-                setError(null);  // Limpa o erro se a requisição for bem-sucedida
-            } catch (error) {
-                setError(`Erro ao buscar logs para ${apiUrl}: ${error.message}`);
+                setError(null);  // Limpa qualquer erro anterior
+            } catch (err) {
+                setError(`Erro ao buscar logs para ${apiUrl}: ${err.message}`);
+                setLogs([]);  // Limpa os logs em caso de erro
             } finally {
-                setLoading(false);
+                setLoading(false);  // Finaliza o carregamento
             }
         };
+
         fetchLogs();
     }, [apiUrl]);
 
@@ -34,7 +36,7 @@ function ApiDetails() {
                 <Link to="/">Voltar à lista de APIs</Link>
             </Typography>
             {loading ? (
-                <Typography variant="body2">Carregando...</Typography>
+                <CircularProgress />  // Indicador de carregamento
             ) : error ? (
                 <Typography variant="body2" color="error">
                     {error}

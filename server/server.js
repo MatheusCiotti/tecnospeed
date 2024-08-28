@@ -9,20 +9,20 @@ app.use(cors());
 const db = new sqlite3.Database('./honesto.sqlite3');
 
 // Endpoint para obter todos os logs
-// Exemplo de configuração para Express
 app.get('/logs', (req, res) => {
     const { rota, limit } = req.query;
+    console.log(`Fetching logs for rota: ${rota} with limit: ${limit}`);
     const query = `SELECT status, created_at FROM log WHERE rota = ? ORDER BY created_at DESC LIMIT ?`;
     db.all(query, [rota, limit], (err, rows) => {
         if (err) {
+            console.error('Database error:', err.message);
             res.status(500).json({ error: err.message });
             return;
         }
+        console.log(`Logs found: ${rows.length}`);
         res.json(rows);
     });
 });
-
-
 
 // Endpoint para obter os últimos 10 logs por rota
 app.get('/api/logs/rota/:rota', (req, res) => {
