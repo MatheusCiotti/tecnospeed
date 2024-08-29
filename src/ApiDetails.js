@@ -1,31 +1,54 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Container, Typography } from '@mui/material';
+import { Container, Typography, CssBaseline } from '@mui/material';
 import { Line } from 'react-chartjs-2';
 import axios from 'axios';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Chart as ChartJS, LineElement, PointElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
+import './index.css';
 
 ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
-function ApiDetails() {
-    const { apiUrl } = useParams();
+const darkTheme = createTheme({
+    palette: {
+        mode: 'dark',
+        background: {
+            default: '#121212',
+            paper: '#1d1d1d',
+        },
+        text: {
+            primary: '#ffffff',
+            secondary: '#a9a9a9',
+        },
+    },
+    typography: {
+        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+        h4: {
+            color: '#ffffff',
+        },
+        body2: {
+            color: '#a9a9a9',
+        },
+    },
+});
+
+function ApiDetails({ apiUrl }) {
     const [logs, setLogs] = useState([]);
 
     useEffect(() => {
-        const fetchLogs = async (rota) => {
+        const fetchLogs = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/api/logs/rota/${encodeURIComponent(rota)}`);
+                const response = await axios.get(`http://localhost:3001/api/logs/rota/${encodeURIComponent(apiUrl)}`);
                 setLogs(response.data);
             } catch (error) {
-                console.error(`Error fetching logs for ${rota}:`, error.message);
+                console.error(`Error fetching logs for ${apiUrl}:`, error.message);
             }
         };
-        
-        fetchLogs(apiUrl);
+
+        fetchLogs();
     }, [apiUrl]);
 
     const data = {
-        labels: logs.map((log) => new Date(log.created_at).toLocaleString()), // Convertendo o timestamp para um formato de data legível
+        labels: logs.map((log) => new Date(log.created_at).toLocaleString()),
         datasets: [
             {
                 label: 'Status da API',
@@ -33,8 +56,8 @@ function ApiDetails() {
                 fill: false,
                 borderColor: logs.map((log, index) => {
                     const currentStatus = log.status;
-                    const previousStatus = logs[index - 1] ? logs[index - 1].status : 200; // Status 200 como padrão se não houver log anterior
-                    const nextStatus = logs[index + 1] ? logs[index + 1].status : 200; // Status 200 como padrão se não houver log posterior
+                    const previousStatus = logs[index - 1] ? logs[index - 1].status : 200;
+                    const nextStatus = logs[index + 1] ? logs[index + 1].status : 200;
 
                     if (currentStatus !== 200) {
                         return 'red';
@@ -46,20 +69,50 @@ function ApiDetails() {
                 }),
                 tension: 0.1,
                 pointBackgroundColor: logs.map((log) => (log.status === 200 ? 'green' : 'red')),
+                pointBorderColor: '#121212',
             },
         ],
     };
 
     return (
-        <Container sx={{ padding: '20px', backgroundColor: '#f0f2f5', minHeight: '100vh' }}>
-            <Typography variant="h4" gutterBottom>
-                Logs da API: {decodeURIComponent(apiUrl)}
-            </Typography>
-            <Typography variant="body2" gutterBottom>
-                <Link to="/">Voltar à lista de APIs</Link>
-            </Typography>
-            <Line data={data} />
-        </Container>
+        <ThemeProvider theme={darkTheme}>
+            <CssBaseline />
+            <Container sx={{ padding: '20px', backgroundColor: '#1d1d1d', minHeight: '50vh' }}>
+                <Typography variant="h4" gutterBottom>
+                    Logs da API: {decodeURIComponent(apiUrl)}
+                </Typography>
+                <Line
+                    data={data}
+                    options={{
+                        scales: {
+                            x: {
+                                ticks: {
+                                    color: '#a9a9a9',
+                                },
+                                grid: {
+                                    color: '#333333',
+                                },
+                            },
+                            y: {
+                                ticks: {
+                                    color: '#a9a9a9',
+                                },
+                                grid: {
+                                    color: '#333333',
+                                },
+                            },
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#ffffff',
+                                },
+                            },
+                        },
+                    }}
+                />
+            </Container>
+        </ThemeProvider>
     );
 }
 
