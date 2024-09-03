@@ -40,4 +40,4 @@ cron.schedule('*/30 * * * * *', () => {
     checkAllApis();
 });
 
-console.log('Monitorando 10 APIs. A cada 30 segundos, será realizada uma verificação.');
+console.log('Monitorando 10 APIs. A cada 30 segundos, será realizada uma verificação.'); 

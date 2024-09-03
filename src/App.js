@@ -1,8 +1,8 @@
-import React, { useState, useRef } from 'react';
-import { Container, Grid, Paper, Typography, Button } from '@mui/material';
+import React, { useState, useRef, useEffect } from 'react';
+import { Container, Grid, Paper, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme } from '@mui/material';
 import ApiDetails from './ApiDetails';
 import './index.css';
-
+import axios from 'axios';
 
 const apiUrls = [
     'https://jsonplaceholder.typicode.com/posts',
@@ -19,7 +19,23 @@ const apiUrls = [
 
 function App() {
     const [selectedApi, setSelectedApi] = useState(null);
+    const [errors, setErrors] = useState([]);
     const detailsRef = useRef(null);
+
+    useEffect(() => {
+        const fetchErrors = async () => {
+            try {
+                const response = await axios.get('http://localhost:3001/api/errors');
+                setErrors(response.data);
+            } catch (error) {
+                console.error('Error fetching errors:', error.message);
+            }
+        };
+
+        fetchErrors();
+        const intervalId = setInterval(fetchErrors, 60000); // Atualizar a cada 1 minuto
+        return () => clearInterval(intervalId);
+    }, []);
 
     const handleMonitorClick = (url) => {
         setSelectedApi(url);
@@ -84,11 +100,45 @@ function App() {
                 ))}
             </Grid>
             {selectedApi && (
-         <div ref={detailsRef} style={{ marginTop: '60px' }}>
-        <ApiDetails apiUrl={selectedApi} />
-        </div>
-        )}
-
+                <div ref={detailsRef} style={{ marginTop: '60px' }}>
+                    <ApiDetails apiUrl={selectedApi} />
+                </div>
+            )}
+            {errors.length > 0 && (
+                <div style={{ marginTop: '40px' }}>
+                    <Typography variant="h6" sx={{ color: '#f44336', marginBottom: '20px' }}>
+                        Erros de Conexão
+                    </Typography>
+                    <TableContainer
+                        component={Paper}
+                        sx={{
+                            backgroundColor: '#1d1d1d', // Fundo escuro para a tabela
+                            color: '#ffffff', // Texto branco geral
+                            borderRadius: '10px',
+                            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.5)',
+                        }}
+                    >
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{ color: '#ffffff', fontWeight: 'bold' }}>API URL</TableCell>
+                                    <TableCell sx={{ color: '#ffffff', fontWeight: 'bold' }}>Status</TableCell>
+                                    <TableCell sx={{ color: '#ffffff', fontWeight: 'bold' }}>Data/Hora</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {errors.map((error, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell sx={{ color: '#e0e0e0' }}>{error.rota}</TableCell> {/* Cor das letras das células */}
+                                        <TableCell sx={{ color: '#e0e0e0' }}>{error.status}</TableCell> {/* Cor das letras das células */}
+                                        <TableCell sx={{ color: '#e0e0e0' }}>{error.created_at}</TableCell> {/* Cor das letras das células */}
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </div>
+            )}
         </Container>
     );
 }

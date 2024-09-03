@@ -39,6 +39,23 @@ app.get('/api/logs/rota/:rota', (req, res) => {
     });
 });
 
+// Endpoint para obter todos os logs de erro
+app.get('/api/errors', (req, res) => {
+    console.log('Fetching all error logs');
+    const query = 'SELECT rota, status, created_at FROM log WHERE status != 200 ORDER BY created_at DESC';
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            console.error('Database error:', err.message);
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        console.log(`Errors found: ${rows.length}`);
+        res.json(rows);
+    });
+});
+
+
 app.listen(port, () => {
     console.log(`API server running on http://localhost:${port}`);
 });
+ 
