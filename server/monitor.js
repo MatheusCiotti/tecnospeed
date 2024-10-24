@@ -1,11 +1,19 @@
 const axios = require('axios');
 const cron = require('node-cron');
-const sqlite3 = require('sqlite3').verbose();
+const { Pool } = require('pg');
 const { format } = require('date-fns');
-const db = new sqlite3.Database('./honesto.sqlite3');
+
+// Configuração do banco PostgreSQL
+const pool = new Pool({
+    user: 'postgres',
+    host: 'localhost',
+    database: 'postgres',
+    password: '123456',
+    port: 5432,
+});
 
 const apiUrls = [
-    'https://jsonplaceholder.typicode.com/posts',
+    'http://www.homologacao.plugboleto.com.br/api/v1/boletos',
     'https://jsonplaceholder.typicode.com/comments',
     'https://jsonplaceholder.typicode.com/albums',
     'https://jsonplaceholder.typicode.com/photos',
@@ -22,10 +30,18 @@ async function checkApiStatus(apiUrl) {
     try {
         const response = await axios.get(apiUrl);
         console.log(`API ${apiUrl} está funcionando. Status: ${response.status}`);
-        db.run('INSERT INTO log (rota, status, created_at) VALUES (?, ?, ?)', [apiUrl, response.status, created_at]);
+        
+        await pool.query(
+            'INSERT INTO log (rota, status, created_at) VALUES ($1, $2, $3)',
+            [apiUrl, response.status, created_at]
+        );
     } catch (error) {
         console.error(`Falha ao conectar na API ${apiUrl}:`, error.message);
-        db.run('INSERT INTO log (rota, status, created_at) VALUES (?, ?, ?)', [apiUrl, 999, created_at]);
+        
+        await pool.query(
+            'INSERT INTO log (rota, status, created_at) VALUES ($1, $2, $3)',
+            [apiUrl, 999, created_at]
+        );
     }
 }
 
@@ -40,4 +56,4 @@ cron.schedule('*/30 * * * * *', () => {
     checkAllApis();
 });
 
-console.log('Monitorando 10 APIs. A cada 30 segundos, será realizada uma verificação.'); 
+console.log('Monitorando 10 APIs. A cada 30 segundos, será realizada uma verificação.');

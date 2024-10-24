@@ -1,21 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-    Container,
-    Grid,
-    Paper,
-    Typography,
-    Button,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow
+    Container, Grid, Paper, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 } from '@mui/material';
 import ApiDetails from './ApiDetails';
 import axios from 'axios';
 
-// Importar a logo principal e as logos das APIs
+// Import logos
 import Logo from './Logos/Logo.png';
 import LogoBB from './Logos/LogoBB 1.png';
 import LogoItau from './Logos/LogoItau 2.png';
@@ -26,8 +16,7 @@ import LogoSantander from './Logos/LogoSantander 1.png';
 import LogoBanrisul from './Logos/LogoBanrisul 1.png';
 import LogoInter from './Logos/LogoInter 1.png';
 
-
-// Lista de URLs das APIs
+// URLs das APIs e suas informações
 const apiUrls = [
     'https://jsonplaceholder.typicode.com/posts',
     'https://jsonplaceholder.typicode.com/comments',
@@ -41,34 +30,9 @@ const apiUrls = [
     'https://dog.ceo/api/breeds/image/random'
 ];
 
-// Lista de nomes para cada API
-const apiNames = [
-    'Banco do Brasil',
-    'Itaú',
-    'Itaú Francesa',
-    'Sicoob',
-    'Sicredi - v2',
-    'Sicredi - v3',
-    'Caixa',
-    'Santander',
-    'Banrisul',
-    'Inter'
-];
+const apiNames = ['Banco do Brasil', 'Itaú', 'Itaú Francesa', 'Sicoob', 'Sicredi - v2', 'Sicredi - v3', 'Caixa', 'Santander', 'Banrisul', 'Inter'];
 
-// Lista de Logos
-const apiLogos = [
-    LogoBB,
-    LogoItau,
-    LogoItau, 
-    LogoSicoob,
-    LogoSicredi,
-    LogoSicredi, 
-    LogoCaixa,
-    LogoSantander,
-    LogoBanrisul,
-    LogoInter
-];
-
+const apiLogos = [LogoBB, LogoItau, LogoItau, LogoSicoob, LogoSicredi, LogoSicredi, LogoCaixa, LogoSantander, LogoBanrisul, LogoInter];
 
 function App() {
     const [selectedApi, setSelectedApi] = useState(null);
@@ -104,13 +68,8 @@ function App() {
 
     return (
         <Container sx={{ padding: '20px', minHeight: '100vh', backgroundColor: ' #090B1E' }}>
-            {/* Adicionado a logo no canto superior esquerdo */}
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-                <img 
-                    src={Logo} 
-                    alt="Logo" 
-                    style={{ width: '271px', height: '62px', marginRight: '10px' }}
-                />
+                <img src={Logo} alt="Logo" style={{ width: '271px', height: '62px', marginRight: '10px' }} />
                 <Typography variant="h4" sx={{ color: '#f7faf8' }}>
                     Monitor de APIs
                 </Typography>
@@ -126,33 +85,18 @@ function App() {
                                 justifyContent: 'space-between',
                                 alignItems: 'center',
                                 padding: '20px',
-                                height: '250px',
+                                height: '355px',
                                 backgroundColor: '#242436',
                                 borderRadius: '10px',
                                 boxShadow: '0 4px 10px rgba(0, 0, 0, 0.5)',
-                                '&:hover': {
-                                    transform: 'translateY(-5px)',
-                                    boxShadow: '0 6px 15px rgba(0, 0, 0, 0.7)',
-                                },
+                                '&:hover': { boxShadow: '0 6px 15px rgba(0, 0, 0, 0.7)' }
                             }}
                         >
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', alignSelf: 'flex-start' }}>
-                                <img 
-                                    src={apiLogos[index]} 
-                                    alt={`${apiNames[index]} logo`} 
-                                    style={{ width: '30px', height: '30px', verticalAlign: 'middle' }} 
-                                />
+                                <img src={apiLogos[index]} alt={`${apiNames[index]} logo`} style={{ width: '30px', height: '30px', verticalAlign: 'middle' }} />
                                 <Typography
                                     variant="h6"
-                                    sx={{
-                                        fontSize: '1.2rem',
-                                        fontWeight: 'bold',
-                                        color: '#f7faf8',
-                                        marginLeft: '10px',
-                                        textAlign: 'left',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                    }}
+                                    sx={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#f7faf8', marginLeft: '10px', textAlign: 'left', display: 'flex', alignItems: 'center' }}
                                 >
                                     {apiNames[index]}
                                 </Typography>
@@ -163,15 +107,8 @@ function App() {
                                     color="primary"
                                     onClick={() => handleMonitorClick(url, apiNames[index])}
                                     sx={{
-                                        backgroundColor: '#757575',
-                                        color: 'white',
-                                        fontWeight: 'bold',
-                                        borderRadius: '20px',
-                                        margin: '1px',
-                                        padding: '10px 60px',
-                                        '&:hover': {
-                                            backgroundColor: '#616161',
-                                        },
+                                        backgroundColor: '#757575', color: 'white', fontWeight: 'bold', borderRadius: '20px', margin: '1px', padding: '10px 60px',
+                                        '&:hover': { backgroundColor: '#616161' }
                                     }}
                                 >
                                     Gráfico
@@ -180,15 +117,8 @@ function App() {
                                     variant="contained"
                                     onClick={handleLogsClick}
                                     sx={{
-                                        backgroundColor: '#757575',
-                                        color: 'white',
-                                        fontWeight: 'bold',
-                                        borderRadius: '20px',
-                                        margin: '1px',
-                                        padding: '10px 30px',
-                                        '&:hover': {
-                                            backgroundColor: '#616161',
-                                        },
+                                        backgroundColor: '#757575', color: 'white', fontWeight: 'bold', borderRadius: '20px', margin: '1px', padding: '10px 30px',
+                                        '&:hover': { backgroundColor: '#616161' }
                                     }}
                                 >
                                     Tabela de erros
@@ -196,15 +126,8 @@ function App() {
                                 <Button
                                     variant="contained"
                                     sx={{
-                                        backgroundColor: '#4caf50',
-                                        color: 'white',
-                                        fontWeight: 'bold',
-                                        borderRadius: '20px',
-                                        margin: '1px',
-                                        padding: '10px 50px',
-                                        '&:hover': {
-                                            backgroundColor: '#388e3c',
-                                        },
+                                        backgroundColor: '#4caf50', color: 'white', fontWeight: 'bold', borderRadius: '20px', margin: '1px', padding: '10px 50px',
+                                        '&:hover': { backgroundColor: '#388e3c' }
                                     }}
                                 >
                                     Conectado
@@ -217,26 +140,15 @@ function App() {
 
             {selectedApi && (
                 <div ref={detailsRef} style={{ marginTop: '60px' }}>
-                    <Typography variant="h6" sx={{ color: '#fff', textAlign: 'center', marginBottom: '20px' }}>
-                    </Typography>
+                    <Typography variant="h6" sx={{ color: '#fff', textAlign: 'center', marginBottom: '20px' }} />
                     <ApiDetails apiUrl={selectedApi.url} apiName={selectedApi.name} />
                 </div>
             )}
 
             {errors.length > 0 && (
                 <div ref={logsRef} style={{ marginTop: '40px' }}>
-                    <Typography variant="h6" sx={{ color: '#f44336', marginBottom: '20px' }}>
-                        Erros de Conexão
-                    </Typography>
-                    <TableContainer
-                        component={Paper}
-                        sx={{
-                            backgroundColor: '#1d1d1d',
-                            color: '#ffffff',
-                            borderRadius: '10px',
-                            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.5)',
-                        }}
-                    >
+                    <Typography variant="h6" sx={{ color: '#f44336', marginBottom: '20px' }}>Erros de Conexão</Typography>
+                    <TableContainer component={Paper} sx={{ backgroundColor: '#1d1d1d', color: '#ffffff', borderRadius: '10px', boxShadow: '0 4px 10px rgba(0, 0, 0, 0.5)' }}>
                         <Table>
                             <TableHead>
                                 <TableRow>
